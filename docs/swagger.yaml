@@ -1,0 +1,138 @@
+info:
+  contact: {}
+paths:
+  /:
+    get:
+      description: Returns service health and basic status information.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Health check
+      tags:
+      - health
+  /delete:
+    delete:
+      description: Deletes a file from the configured S3 bucket using folder and file
+        query parameters.
+      parameters:
+      - description: Folder inside the bucket
+        in: query
+        name: folder
+        required: true
+        type: string
+      - description: File name to delete
+        in: query
+        name: file
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "405":
+          description: Method Not Allowed
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Delete file from S3
+      tags:
+      - files
+  /download:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Receives an Excel file, extracts 'BAPP ID', 'NPSN', and 'Serial
+        Number' and returns them.
+      parameters:
+      - description: Excel file to process (.xlsx)
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "405":
+          description: Method Not Allowed
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Upload Excel File for DAC
+      tags:
+      - dac
+  /send:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Uploads a single file to the configured S3 bucket under the provided
+        folder.
+      parameters:
+      - description: Target folder inside the bucket
+        in: formData
+        name: folder
+        required: true
+        type: string
+      - description: File to upload
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "405":
+          description: Method Not Allowed
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Upload file to S3
+      tags:
+      - files
+swagger: "2.0"
